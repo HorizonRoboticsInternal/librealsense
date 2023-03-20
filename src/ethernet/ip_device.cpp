@@ -31,7 +31,7 @@ void ip_device::recover_rtsp_client(int sensor_index)
 ip_device::~ip_device()
 {
     DBG << "Destroying ip_device";
-    
+
     try
     {
         is_device_alive = false;
@@ -71,8 +71,8 @@ ip_device::ip_device(rs2::software_device sw_device, std::string ip_address)
     int colon = ip_address.find(":");
     this->ip_address = ip_address.substr(0, colon); // 10.10.10.10:8554 => 10.10.10.10
     this->ip_port = 8554; // default RTSP port
-    if (colon != -1) 
-    try 
+    if (colon != -1)
+    try
     {
         this->ip_port = std::stoi(ip_address.substr(colon + 1)); // 10.10.10.10:8554 => 8554
     }
@@ -141,9 +141,11 @@ bool ip_device::init_device_data(rs2::software_device sw_device)
                 {
                     remote_sensors[control.sensorId]->sw_sensor->add_read_only_option(control.option, control.range.def);
                 }
-                else
+                else if(control.range.min <= control.range.def && control.range.def <= control.range.max)
                 {
                     remote_sensors[control.sensorId]->sw_sensor->add_option(control.option, {control.range.min, control.range.max, control.range.def, control.range.step});
+                } else {
+                    continue;
                 }
                 remote_sensors[control.sensorId]->sensors_option[control.option] = control.range.def;
                 try
@@ -224,9 +226,9 @@ void ip_device::polling_state_loop()
             {
                 //poll start/stop events
                 auto sw_sensor = remote_sensors[i]->sw_sensor.get();
-   
-                enabled = (sw_sensor->get_active_streams().size() > 0); 
-   
+
+                enabled = (sw_sensor->get_active_streams().size() > 0);
+
                 if (remote_sensors[i]->is_enabled != enabled)
                 {
                     try
@@ -363,8 +365,8 @@ void ip_device::inject_frames_loop(std::shared_ptr<rs_rtp_stream> rtp_stream)
         rtp_stream.get()->frame_data_buff.frame_number = 0;
 
         rtp_stream->frame_data_buff.bpp = getStreamProfileBpp(rtp_stream.get()->get_stream_profile().format());
-        rtp_stream->frame_data_buff.stride = rtp_stream->frame_data_buff.bpp * rtp_stream->m_rs_stream.width;        
-        
+        rtp_stream->frame_data_buff.stride = rtp_stream->frame_data_buff.bpp * rtp_stream->m_rs_stream.width;
+
         int uid = rtp_stream.get()->m_rs_stream.uid;
         rs2_stream type = rtp_stream.get()->m_rs_stream.type;
         int sensor_id = stream_type_to_sensor_id(type);
