@@ -55,7 +55,7 @@ struct server
             CompressionFactory::getIsEnabled() = 1;
         }
 
-        if (arg_address.isSet()) 
+        if (arg_address.isSet())
         {
             ReceivingInterfaceAddr = inet_addr(arg_address.getValue().c_str());
         }
@@ -64,9 +64,9 @@ struct server
         {
             port = arg_port.getValue();
         }
-        
+
         OutPacketBuffer::increaseMaxSizeTo(MAX_MESSAGE_SIZE);
-        
+
         // Begin by setting up our usage environment:
         scheduler = BasicTaskScheduler::createNew();
         env = RSUsageEnvironment::createNew(*scheduler);
@@ -96,16 +96,19 @@ struct server
             for(auto stream_profile : sensor.getStreamProfiles())
             {
                 rs2::video_stream_profile stream = stream_profile.second;
-                if(stream.format() == RS2_FORMAT_BGR8 
-                || stream.format() == RS2_FORMAT_RGB8 
-                || stream.format() == RS2_FORMAT_Z16 
-                || stream.format() == RS2_FORMAT_Y8 
-                || stream.format() == RS2_FORMAT_YUYV 
+                if(stream.format() == RS2_FORMAT_BGR8
+                || stream.format() == RS2_FORMAT_RGB8
+                || stream.format() == RS2_FORMAT_Z16
+                || stream.format() == RS2_FORMAT_Y8
+                || stream.format() == RS2_FORMAT_YUYV
                 || stream.format() == RS2_FORMAT_UYVY)
                 {
+                    sms->addSubsession(RsServerMediaSubsession::createNew(*env, stream, rsDevice));
+                    supported_stream_profiles.push_back(stream);
+                    continue;
                     if(stream.fps() == 6)
                     {
-                        if((stream.width() == 1280 && stream.height() == 720) || (stream.width() == 640 && stream.height() == 480)) 
+                        if((stream.width() == 1280 && stream.height() == 720) || (stream.width() == 640 && stream.height() == 480))
                         {
                             sms->addSubsession(RsServerMediaSubsession::createNew(*env, stream, rsDevice));
 
