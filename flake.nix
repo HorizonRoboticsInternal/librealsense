@@ -41,6 +41,7 @@
         cmakeCurses
         ninja
         pkg-config
+        nasm
 
         # Development time dependencies
         gtest
@@ -51,6 +52,7 @@
         gtk3
         glfw
         libGLU
+        libjpeg  # This is just libjpeg-turbo
         curl
       ];
 
@@ -63,6 +65,6 @@
       '';
     };
 
-    # packages.default = pkgs.callPackage ./default.nix {};
+    packages.default = pkgs.callPackage ./nix/pkgs/librealsense {};
   });
 }
