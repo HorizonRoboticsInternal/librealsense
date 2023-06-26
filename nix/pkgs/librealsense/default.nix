@@ -63,6 +63,7 @@ stdenv.mkDerivation rec {
     "-DCHECK_FOR_UPDATES=OFF" # activated by BUILD_GRAPHICAL_EXAMPLES, will make it download and compile libcurl
     # Extra flags for Hobot deployment
     "-DBUILD_NETWORK_DEVICE=ON"
+    "-DFORCE_RSUSB_BACKEND=ON"
   ] ++ lib.optionals enablePython [
     "-DBUILD_PYTHON_BINDINGS:bool=true"
     "-DXXNIX_PYTHON_SITEPACKAGES=${placeholder "out"}/${pythonPackages.python.sitePackages}"
