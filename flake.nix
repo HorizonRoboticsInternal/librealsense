@@ -16,12 +16,7 @@
 
   outputs = { self, nixpkgs, ... }@inputs: {
     overlays.default = final: prev: {
-        librealsensex = final.callPackage ./nix/pkgs/librealsense {};
-        pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-          (python-final: python-prev: {
-            real-sense-sensor = python-final.callPackage ./nix/pkgs/real-sense-sensor {};
-          })
-        ];
+      librealsensex = final.callPackage ./nix/pkgs/librealsense {};
     };
   } // inputs.utils.lib.eachSystem [
     "x86_64-linux"
@@ -74,6 +69,5 @@
     };
 
     packages.default = pkgs.librealsensex;
-    packages.real-sense-sensor = pkgs.python3Packages.real-sense-sensor;
   });
 }
