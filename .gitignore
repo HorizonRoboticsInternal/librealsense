@@ -89,3 +89,6 @@ librealsense-log.txt
 *.cxx
 
 .vscode/*
+
+# Nix
+result

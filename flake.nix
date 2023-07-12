@@ -14,27 +14,35 @@
     utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, ... }@inputs: inputs.utils.lib.eachSystem [
+  outputs = { self, nixpkgs, ... }@inputs: {
+    overlays.default = final: prev: {
+        librealsensex = final.callPackage ./nix/pkgs/librealsense {};
+        pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+          (python-final: python-prev: {
+            real-sense-sensor = python-final.callPackage ./nix/pkgs/real-sense-sensor {};
+          })
+        ];
+    };
+  } // inputs.utils.lib.eachSystem [
     "x86_64-linux"
   ] (system: let
+    pkgs-dev = import nixpkgs {
+      inherit system;
+      overlays = [];
+    };
+
     pkgs = import nixpkgs {
       inherit system;
-
-      # Add overlays here if you need to override the nixpkgs
-      # official packages.
-      overlays = [];
-      
-      # Uncomment this if you need unfree software (e.g. cuda) for
-      # your project.
-      #
-      # config.allowUnfree = true;
+      overlays = [
+        self.overlays.default
+      ];
     };
   in {
-    devShells.default = pkgs.mkShell rec {
+    devShells.default = pkgs-dev.mkShell rec {
       # Update the name to something that suites your project.
       name = "librealsense";
 
-      packages = with pkgs; [
+      packages = with pkgs-dev; [
         # Development Tools
         gcc
         cmake
@@ -65,6 +73,7 @@
       '';
     };
 
-    packages.default = pkgs.callPackage ./nix/pkgs/librealsense {};
+    packages.default = pkgs.librealsensex;
+    packages.real-sense-sensor = pkgs.python3Packages.real-sense-sensor;
   });
 }
