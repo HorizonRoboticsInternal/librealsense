@@ -13,8 +13,6 @@ add_subdirectory(${_rel_path}/realsense-file)
 
 if(BUILD_NETWORK_DEVICE)
 
-    add_subdirectory(${_rel_path}/live555)
-
     include(ExternalProject)
 
     ### libjpeg-turbo ###################################################
