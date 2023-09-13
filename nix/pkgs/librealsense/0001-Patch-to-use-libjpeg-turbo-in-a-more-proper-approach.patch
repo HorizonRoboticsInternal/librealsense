@@ -4,34 +4,9 @@ Date: Mon, 26 Jun 2023 14:17:59 -0700
 Subject: [PATCH] Patch to use libjpeg-turbo in a more proper approach
 
 ---
- src/compression/CMakeLists.txt |  6 ++----
  third-party/CMakeLists.txt     | 22 +++++++++++-----------
- 2 files changed, 13 insertions(+), 15 deletions(-)
+ 1 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/src/compression/CMakeLists.txt b/src/compression/CMakeLists.txt
-index d049c0810..b4d53ad32 100644
---- a/src/compression/CMakeLists.txt
-+++ b/src/compression/CMakeLists.txt
-@@ -29,9 +29,7 @@ include_directories(
- #target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_11)
- set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
- 
--add_dependencies(${PROJECT_NAME}
--    libjpeg-turbo
--)
-+find_package(libjpeg-turbo REQUIRED)
- 
- include_directories(
-     ${CMAKE_BINARY_DIR}/libjpeg-turbo/include
-@@ -48,7 +46,7 @@ if(WIN32)
- else()
-     target_link_libraries(${PROJECT_NAME}
-         PRIVATE ${DEPENDENCIES}
--        PRIVATE ${CMAKE_BINARY_DIR}/libjpeg-turbo/lib/libturbojpeg.a
-+        PRIVATE libjpeg-turbo::turbojpeg libjpeg-turbo::jpeg
-     )
- endif()
- 
 diff --git a/third-party/CMakeLists.txt b/third-party/CMakeLists.txt
 index 2e96a0226..1a442dce2 100644
 --- a/third-party/CMakeLists.txt
