@@ -39,15 +39,11 @@ stdenv.mkDerivation rec {
     ++ lib.optionals enablePython (with pythonPackages; [ python pybind11 ])
     ++ lib.optionals enableGUI [ mesa gtk3 glfw libGLU curl ];
 
-  patches = [
-    ./0001-Patch-to-use-libjpeg-turbo-in-a-more-proper-approach.patch
-  ];
-
-  postPatch = ''
-    # https://github.com/IntelRealSense/librealsense/issues/11092
-    # insert a "#include <iostream" at beginning of file
-    sed '1i\#include <iostream>' -i wrappers/python/pyrs_device.cpp
-  '';
+  # postPatch = ''
+  #   # https://github.com/IntelRealSense/librealsense/issues/11092
+  #   # insert a "#include <iostream" at beginning of file
+  #   sed '1i\#include <iostream>' -i wrappers/python/pyrs_device.cpp
+  # '';
 
   nativeBuildInputs = [
     cmake
